@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="포켓딜">
+<meta name="theme-color" content="#0b1020">
+<title>포켓딜 · 실시간 카드 시세</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{--bg:#0b1020;--card:#151b30;--card2:#1c2440;--line:#2a3357;--text:#eaf0ff;
+    --sub:#9aa6cf;--accent:#5b8cff;--good:#2fd47b;--bad:#ff6b6b;--gold:#ffcc4d;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:'Pretendard','Pretendard Variable',-apple-system,sans-serif;padding-bottom:env(safe-area-inset-bottom);}
+  .wrap{max-width:480px;margin:0 auto;min-height:100vh;}
+  header{position:sticky;top:0;z-index:20;background:rgba(11,16,32,.92);backdrop-filter:blur(12px);
+    padding:calc(env(safe-area-inset-top) + 14px) 18px 10px;border-bottom:1px solid var(--line);}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;letter-spacing:-.5px;}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);}
+  .status{margin-left:auto;font-weight:600;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--sub);}
+  .status.live{color:var(--good);border-color:rgba(47,212,123,.4);}
+  .status.off{color:var(--gold);border-color:rgba(255,204,77,.4);}
+  .search{margin-top:12px;display:flex;align-items:center;gap:8px;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:10px 12px;}
+  .search input{flex:1;background:none;border:none;color:var(--text);font-size:15px;outline:none;font-family:inherit;}
+  .navtabs{display:flex;gap:8px;padding:12px 16px 4px;}
+  .tab{flex:1;text-align:center;padding:9px 0;border-radius:10px;font-size:13px;font-weight:700;
+    background:var(--card);color:var(--sub);border:1px solid var(--line);cursor:pointer;}
+  .tab.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .list{padding:8px 16px 90px;}
+  .hint{color:var(--sub);text-align:center;padding:36px 20px;font-size:13px;line-height:1.7;}
+  .item{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:11px;margin-bottom:10px;cursor:pointer;}
+  .thumb{width:50px;height:70px;border-radius:7px;flex-shrink:0;object-fit:cover;background:var(--card2);
+    display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid var(--line);}
+  .meta{flex:1;min-width:0;}
+  .meta h3{margin:0;font-size:14.5px;font-weight:700;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .meta .set{font-size:11.5px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .vchip{font-size:10px;font-weight:800;padding:3px 7px;border-radius:6px;margin-top:6px;display:inline-block;}
+  .vc-import{background:rgba(47,212,123,.15);color:var(--good);}
+  .vc-local{background:rgba(91,140,255,.15);color:var(--accent);}
+  .vc-none{background:var(--card2);color:var(--sub);}
+  .price{text-align:right;flex-shrink:0;}
+  .price .v{font-size:14px;font-weight:800;} .price .s{font-size:11px;color:var(--sub);margin-top:2px;}
+  .star{font-size:20px;flex-shrink:0;padding:4px;cursor:pointer;}
+  .detail{position:fixed;inset:0;background:var(--bg);z-index:50;overflow-y:auto;transform:translateX(100%);
+    transition:transform .28s cubic-bezier(.4,0,.2,1);max-width:480px;margin:0 auto;}
+  .detail.open{transform:translateX(0);}
+  .dhead{position:sticky;top:0;z-index:5;background:rgba(11,16,32,.92);backdrop-filter:blur(12px);
+    padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;}
+  .back{font-size:24px;cursor:pointer;width:30px;}
+  .dhead h2{font-size:16px;margin:0;font-weight:800;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dbody{padding:16px;}
+  .hero{display:flex;gap:14px;margin-bottom:8px;}
+  .hero img{width:96px;height:134px;border-radius:9px;object-fit:cover;border:1px solid var(--line);}
+  .hero .info h1{font-size:18px;margin:0 0 4px;letter-spacing:-.4px;line-height:1.2;}
+  .hero .info p{margin:0;color:var(--sub);font-size:12.5px;}
+  .pricerow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .pbox{flex:1;min-width:78px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px;}
+  .pbox span{font-size:10.5px;color:var(--sub);} .pbox b{display:block;font-size:14px;margin-top:2px;}
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;margin:14px 0;}
+  .sec h4{margin:0 0 12px;font-size:14px;font-weight:800;letter-spacing:-.3px;}
+  canvas{width:100%!important;}
+  .calc label{display:block;font-size:11.5px;color:var(--sub);margin:9px 0 4px;font-weight:600;}
+  .calc input,.calc select{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);
+    border-radius:9px;padding:9px 11px;font-size:14px;font-family:inherit;outline:none;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .result{margin-top:15px;border-radius:14px;padding:15px;text-align:center;border:1px solid var(--line);}
+  .result.import{background:linear-gradient(145deg,rgba(47,212,123,.18),rgba(47,212,123,.04));border-color:rgba(47,212,123,.4);}
+  .result.local{background:linear-gradient(145deg,rgba(91,140,255,.18),rgba(91,140,255,.04));border-color:rgba(91,140,255,.4);}
+  .result .tag{font-size:13px;font-weight:700;color:var(--sub);}
+  .result .big{font-size:25px;font-weight:900;margin:5px 0;letter-spacing:-.5px;}
+  .result .sub{font-size:12px;color:var(--sub);}
+  .compare{display:flex;gap:9px;margin-top:13px;}
+  .ccol{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px;}
+  .ccol h5{margin:0 0 7px;font-size:11.5px;color:var(--sub);font-weight:700;}
+  .crow{display:flex;justify-content:space-between;font-size:11.5px;padding:3px 0;}
+  .ctot{border-top:1px solid var(--line);margin-top:5px;padding-top:6px;font-size:13.5px;font-weight:800;}
+  .note{font-size:11px;color:var(--sub);line-height:1.6;margin-top:9px;}
+  .btn{display:block;width:100%;padding:13px;border-radius:12px;border:none;font-family:inherit;
+    font-size:15px;font-weight:800;cursor:pointer;margin-top:8px;}
+  .btn-p{background:var(--accent);color:#fff;} .btn-g{background:var(--card2);color:var(--text);border:1px solid var(--line);}
+  .disclaimer{font-size:10.5px;color:var(--sub);text-align:center;padding:4px 24px 28px;line-height:1.6;opacity:.85;}
+  .fab{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 18px);right:max(18px,calc(50% - 222px));
+    width:56px;height:56px;border-radius:50%;background:var(--gold);color:#1a1300;font-size:30px;font-weight:700;
+    border:none;box-shadow:0 6px 20px rgba(255,204,77,.4);cursor:pointer;z-index:30;display:none;}
+  .spin{text-align:center;padding:40px;color:var(--sub);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="dot"></span>포켓딜<span class="status" id="status">연결 확인중…</span></div>
+    <div class="search">🔍<input id="q" placeholder="카드 검색 (charizard, pikachu, mew...)" onkeydown="if(event.key==='Enter')doSearch()"></div>
+  </header>
+  <div class="navtabs">
+    <div class="tab on" id="tabSearch" onclick="switchTab('search')">🔎 검색</div>
+    <div class="tab" id="tabWatch" onclick="switchTab('watch')">⭐ 관심목록</div>
+  </div>
+  <div class="list" id="list"></div>
+  <p class="disclaimer">해외 시세·이미지: pokemontcg.io (무료) · 환율: exchangerate-api (무료) · 국내 시세는 직접 입력하면 이 폰에 저장됩니다. 관세 계산은 참고용이에요.</p>
+</div>
+
+<button class="fab" id="fab" onclick="addManual()">＋</button>
+
+<div class="detail" id="detail">
+  <div class="dhead"><span class="back" onclick="closeDetail()">‹</span><h2 id="dTitle">카드</h2><span class="star" id="dStar" onclick="toggleStar()">☆</span></div>
+  <div class="dbody">
+    <div class="hero">
+      <img id="dImg" alt="">
+      <div class="info">
+        <h1 id="dName"></h1><p id="dSet"></p>
+        <div class="pricerow">
+          <div class="pbox"><span>해외 market</span><b id="dMk"></b></div>
+          <div class="pbox"><span>국내 시세</span><b id="dLc"></b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h4>📈 가격 추이 (원화 환산)</h4>
+      <canvas id="chart" height="190"></canvas>
+      <p class="note" id="chartNote"></p>
+    </div>
+
+    <div class="sec calc">
+      <h4>🧮 총비용 · 국내구매 vs 해외직구</h4>
+      <div class="grid2">
+        <div><label>국내 시세 (원) <span style="color:var(--gold)">●저장</span></label><input type="number" id="cLocal" oninput="calc()"></div>
+        <div><label>국내 배송비 (원)</label><input type="number" id="cLocalShip" value="3000" oninput="calc()"></div>
+        <div><label>해외 시세 (USD)</label><input type="number" id="cIntl" oninput="calc()"></div>
+        <div><label>국제 배송비 (USD)</label><input type="number" id="cIntlShip" value="15" oninput="calc()"></div>
+        <div><label>환율 (원/USD)</label><input type="number" id="cFx" oninput="calc()"></div>
+        <div><label>관세율 (%)</label><input type="number" id="cDuty" value="8" oninput="calc()"></div>
+      </div>
+      <label>발송 방식 (면세한도)</label>
+      <select id="cMethod" onchange="calc()">
+        <option value="200">미국발 특송 (DHL/FedEx/UPS) · $200 면세</option>
+        <option value="150">국제우편 / 기타국가 · $150 면세</option>
+      </select>
+      <div class="result" id="result">
+        <div class="tag" id="rTag"></div><div class="big" id="rBig"></div><div class="sub" id="rSub"></div>
+      </div>
+      <div class="compare">
+        <div class="ccol"><h5>🇰🇷 국내</h5>
+          <div class="crow"><span>카드값</span><b id="kCard"></b></div>
+          <div class="crow"><span>택배</span><b id="kShip"></b></div>
+          <div class="crow ctot"><span>합계</span><b id="kTot"></b></div></div>
+        <div class="ccol"><h5>🌎 직구</h5>
+          <div class="crow"><span>카드값</span><b id="iCard"></b></div>
+          <div class="crow"><span>배송</span><b id="iShip"></b></div>
+          <div class="crow"><span>관세+부가세</span><b id="iTax"></b></div>
+          <div class="crow ctot"><span>합계</span><b id="iTot"></b></div></div>
+      </div>
+      <p class="note" id="taxNote"></p>
+      <button class="btn btn-g" onclick="saveLocal()">💾 국내 시세 저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API="https://api.pokemontcg.io/v2/cards";
+const FXAPI="https://open.er-api.com/v6/latest/USD";
+const won=n=>"₩"+Math.round(n).toLocaleString("ko-KR");
+let FX=1380, LIVE=false, tab="search", results=[], current=null, chart=null;
+
+// ---- localStorage helpers ----
+const LS={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},
+  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
+const getWatch=()=>LS.get("pd_watch",[]);
+const setWatch=w=>LS.set("pd_watch",w);
+const getLocalPrice=id=>LS.get("pd_lc_"+id,null);
+const setLocalPrice=(id,v)=>LS.set("pd_lc_"+id,v);
+const getHist=id=>LS.get("pd_hist_"+id,[]);
+function logSnapshot(c,usd,krw){
+  const h=getHist(c.id), today=new Date().toISOString().slice(0,10);
+  if(h.length && h[h.length-1].d===today){h[h.length-1]={d:today,usd,krw};}
+  else h.push({d:today,usd,krw});
+  if(h.length>120)h.shift();
+  LS.set("pd_hist_"+c.id,h);
+  return h;
+}
+
+// ---- 환율 ----
+async function loadFX(){
+  const cached=LS.get("pd_fx",null), today=new Date().toISOString().slice(0,10);
+  if(cached && cached.d===today){FX=cached.v;return;}
+  try{
+    const r=await fetch(FXAPI); const j=await r.json();
+    if(j.rates&&j.rates.KRW){FX=Math.round(j.rates.KRW); LS.set("pd_fx",{d:today,v:FX});}
+  }catch(e){ if(cached)FX=cached.v; }
+}
+
+// ---- 관세 엔진 ----
+function importTotal(usd,shipUsd,fx,dutyPct,freeLimit){
+  const cardKRW=usd*fx, shipKRW=shipUsd*fx; let duty=0,vat=0,taxed=false;
+  if(usd>freeLimit){taxed=true; const cif=(usd+shipUsd)*fx; duty=cif*(dutyPct/100); vat=(cif+duty)*0.10;}
+  return {cardKRW,shipKRW,tax:duty+vat,duty,vat,taxed,total:cardKRW+shipKRW+duty+vat};
+}
+function verdict(localKRW,usd){
+  if(!localKRW||!usd)return null;
+  const lt=localKRW+3000, im=importTotal(usd,15,FX,8,200);
+  return lt-im.total; // + → 직구 이득
+}
+
+// ---- API 시세 추출 ----
+function pickUSD(card){
+  const tp=card.tcgplayer&&card.tcgplayer.prices;
+  if(tp){for(const k in tp){const p=tp[k]; if(p&&(p.market||p.mid))return p.market||p.mid;}}
+  const cm=card.cardmarket&&card.cardmarket.prices;
+  if(cm&&cm.trendPrice)return cm.trendPrice;
+  return null;
+}
+function cmTrend(card){ // [30일전,7일전,현재] USD
+  const cm=card.cardmarket&&card.cardmarket.prices;
+  if(cm&&cm.avg30)return [cm.avg30,cm.avg7||cm.avg30,cm.avg1||cm.trendPrice||cm.avg7];
+  return null;
+}
+
+// ---- 검색 ----
+async function doSearch(){
+  const q=document.getElementById("q").value.trim();
+  if(!q)return;
+  const list=document.getElementById("list");
+  list.innerHTML='<div class="spin">불러오는 중…</div>';
+  tab="search"; syncTabs();
+  try{
+    const url=`${API}?q=name:"${encodeURIComponent(q)}"&pageSize=24&orderBy=-set.releaseDate`;
+    const r=await fetch(url); const j=await r.json();
+    results=(j.data||[]).map(c=>({
+      id:c.id,name:c.name,set:(c.set?c.set.name:"")+" · "+(c.set?c.set.releaseDate:""),
+      img:c.images?c.images.small:"",usd:pickUSD(c),trend:cmTrend(c),manual:false
+    }));
+    setLive(true);
+    renderList(results);
+  }catch(e){ setLive(false); list.innerHTML='<p class="hint">⚠️ 실시간 연결 차단됨(파일 모드 CORS). 사파리에서 열거나 잠시 후 재시도. 관심목록·계산기는 그대로 동작해요.</p>'; }
+}
+function setLive(v){LIVE=v;const s=document.getElementById("status");
+  s.textContent=v?("🟢 실시간 ₩"+FX):"🟡 오프라인";
+  s.className="status "+(v?"live":"off");}
+
+// ---- 리스트 렌더 ----
+function renderList(arr){
+  const list=document.getElementById("list");
+  if(!arr.length){list.innerHTML='<p class="hint">결과가 없어요.</p>';return;}
+  list.innerHTML="";
+  const watch=getWatch().map(w=>w.id);
+  arr.forEach(c=>{
+    const lc=getLocalPrice(c.id), diff=verdict(lc,c.usd);
+    let chip='<span class="vchip vc-none">국내가 입력</span>';
+    if(diff!==null)chip=diff>0?`<span class="vchip vc-import">직구 ${won(Math.abs(diff))} 이득</span>`
+                              :`<span class="vchip vc-local">국내 ${won(Math.abs(diff))} 이득</span>`;
+    const starred=watch.includes(c.id);
+    const el=document.createElement("div"); el.className="item";
+    el.innerHTML=`<div class="thumb-w" onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+        ${c.img?`<img class="thumb" src="${c.img}">`:`<div class="thumb">🃏</div>`}</div>
+      <div class="meta" onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+        <h3>${c.name}</h3><div class="set">${c.set}</div>${chip}</div>
+      <div class="price" onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+        <div class="v">${c.usd?"$"+c.usd.toFixed(2):"—"}</div>
+        <div class="s">${c.usd?won(c.usd*FX):""}</div></div>
+      <div class="star" onclick='quickStar(${JSON.stringify(c).replace(/'/g,"&#39;")})'>${starred?"★":"☆"}</div>`;
+    list.appendChild(el);
+  });
+}
+
+// ---- 탭 ----
+function switchTab(t){tab=t;syncTabs();
+  if(t==="watch")renderList(getWatch()); else renderList(results);}
+function syncTabs(){
+  document.getElementById("tabSearch").classList.toggle("on",tab==="search");
+  document.getElementById("tabWatch").classList.toggle("on",tab==="watch");
+  document.getElementById("fab").style.display=tab==="watch"?"block":"none";
+}
+function quickStar(c){
+  let w=getWatch();
+  if(w.find(x=>x.id===c.id))w=w.filter(x=>x.id!==c.id); else w.push(c);
+  setWatch(w); renderList(tab==="watch"?getWatch():results);
+}
+
+// ---- 상세 ----
+function openDetail(c){
+  current=c;
+  document.getElementById("dTitle").textContent=c.name;
+  document.getElementById("dName").textContent=c.name;
+  document.getElementById("dSet").textContent=c.set;
+  const img=document.getElementById("dImg");
+  if(c.img){img.src=c.img;img.style.display="";}else img.style.display="none";
+  document.getElementById("dMk").textContent=c.usd?"$"+c.usd.toFixed(2):"—";
+  const lc=getLocalPrice(c.id);
+  document.getElementById("dLc").textContent=lc?won(lc):"미입력";
+  document.getElementById("cLocal").value=lc||"";
+  document.getElementById("cIntl").value=c.usd||"";
+  document.getElementById("cFx").value=FX;
+  document.getElementById("dStar").textContent=getWatch().find(x=>x.id===c.id)?"★":"☆";
+  drawChart(c,lc); calc();
+  document.getElementById("detail").classList.add("open");
+}
+function closeDetail(){document.getElementById("detail").classList.remove("open");
+  if(tab==="watch")renderList(getWatch()); else renderList(results);}
+function toggleStar(){quickStar(current);
+  document.getElementById("dStar").textContent=getWatch().find(x=>x.id===current.id)?"★":"☆";}
+
+function drawChart(c,lc){
+  let labels=[], intlData=[], localData=[];
+  const hist=getHist(c.id);
+  if(c.usd){const h=logSnapshot(c,c.usd,lc||null);} // 오늘 스냅샷 기록
+  const h2=getHist(c.id);
+  if(h2.length>=2){
+    h2.forEach(p=>{labels.push(p.d.slice(5)); intlData.push(importTotal(p.usd,15,FX,8,200).total);
+      localData.push(p.krw?p.krw+3000:null);});
+  }else if(c.trend){
+    labels=["30일 전","7일 전","현재"];
+    intlData=c.trend.map(u=>importTotal(u,15,FX,8,200).total);
+    localData=[null,null,lc?lc+3000:null];
+  }else{labels=["현재"]; intlData=[c.usd?importTotal(c.usd,15,FX,8,200).total:0]; localData=[lc?lc+3000:null];}
+  const ctx=document.getElementById("chart"); if(chart)chart.destroy();
+  chart=new Chart(ctx,{type:"line",data:{labels,datasets:[
+    {label:"직구 총비용",data:intlData,borderColor:"#2fd47b",backgroundColor:"rgba(47,212,123,.08)",tension:.35,fill:true,pointRadius:3,borderWidth:2.5,spanGaps:true},
+    {label:"국내 총비용",data:localData,borderColor:"#5b8cff",backgroundColor:"rgba(91,140,255,.1)",tension:.35,fill:true,pointRadius:3,borderWidth:2.5,spanGaps:true}
+  ]},options:{responsive:true,interaction:{intersect:false,mode:"index"},
+    plugins:{legend:{labels:{color:"#9aa6cf",font:{family:"Pretendard",size:12},boxWidth:14}},
+      tooltip:{callbacks:{label:x=>x.dataset.label+": "+(x.parsed.y?won(x.parsed.y):"—")}}},
+    scales:{y:{ticks:{color:"#9aa6cf",font:{family:"Pretendard"},callback:v=>"₩"+Math.round(v/1000)+"k"},grid:{color:"rgba(42,51,87,.5)"}},
+      x:{ticks:{color:"#9aa6cf",font:{family:"Pretendard"}},grid:{display:false}}}}});
+  document.getElementById("chartNote").textContent = h2.length>=2
+    ? "앱을 열 때마다 그날 시세가 기록돼서 진짜 변동 그래프가 쌓이는 중이야. 두 선이 만나는 지점이 이득 전환점."
+    : (c.trend?"cardmarket 30/7/1일 평균 기반 단기 추이. 앱을 자주 열수록 실제 히스토리가 길게 쌓여.":"히스토리 누적 중 — 며칠 더 열어봐.");
+}
+
+function calc(){
+  if(!current)return;
+  const L=+document.getElementById("cLocal").value||0, Ls=+document.getElementById("cLocalShip").value||0;
+  const I=+document.getElementById("cIntl").value||0, Is=+document.getElementById("cIntlShip").value||0;
+  const fx=+document.getElementById("cFx").value||FX, duty=+document.getElementById("cDuty").value||0;
+  const lim=+document.getElementById("cMethod").value||200;
+  const lt=L+Ls, im=importTotal(I,Is,fx,duty,lim), diff=lt-im.total;
+  document.getElementById("kCard").textContent=won(L);
+  document.getElementById("kShip").textContent=won(Ls);
+  document.getElementById("kTot").textContent=won(lt);
+  document.getElementById("iCard").textContent=won(im.cardKRW);
+  document.getElementById("iShip").textContent=won(im.shipKRW);
+  document.getElementById("iTax").textContent=im.taxed?won(im.tax):"면세 ₩0";
+  document.getElementById("iTot").textContent=won(im.total);
+  const r=document.getElementById("result");
+  if(!L){r.className="result";document.getElementById("rTag").textContent="국내 시세를 입력하면";
+    document.getElementById("rBig").textContent="비교 시작";document.getElementById("rSub").textContent="번개장터 평균가를 넣어봐";}
+  else if(diff>0){r.className="result import";document.getElementById("rTag").textContent="✈️ 해외 직구가 이득";
+    document.getElementById("rBig").textContent=won(diff)+" 절약";document.getElementById("rSub").textContent="국내보다 직구가 저렴";}
+  else{r.className="result local";document.getElementById("rTag").textContent="🇰🇷 국내 구매가 이득";
+    document.getElementById("rBig").textContent=won(-diff)+" 절약";document.getElementById("rSub").textContent="관세 포함 시 국내가 저렴";}
+  document.getElementById("taxNote").innerHTML=im.taxed
+    ?`⚠️ $${I} > 면세 $${lim} → <b>전체 과세</b>. 관세 ${won(im.duty)} + 부가세 ${won(im.vat)}. 합산과세 주의.`
+    :`✅ $${I} ≤ 면세 $${lim} → 면제. 1달러만 넘겨도 전체 과세되니 장바구니 쪼개기.`;
+}
+function saveLocal(){
+  if(!current)return;
+  const v=+document.getElementById("cLocal").value||0;
+  setLocalPrice(current.id,v);
+  document.getElementById("dLc").textContent=v?won(v):"미입력";
+  const h=getHist(current.id);
+  if(h.length){h[h.length-1].krw=v;LS.set("pd_hist_"+current.id,h);}
+  alert("국내 시세 저장됨 ✓");
+}
+
+// ---- 수동 추가 (박스/미개봉 등 API에 없는 상품) ----
+function addManual(){
+  const name=prompt("상품 이름 (예: 151 부스터박스 한국판)"); if(!name)return;
+  const usd=parseFloat(prompt("해외 시세 USD (모르면 0)")||"0");
+  const id="manual_"+Date.now();
+  const c={id,name,set:"수동 등록 · 미개봉/박스",img:"",usd:usd||null,trend:null,manual:true};
+  const w=getWatch();w.push(c);setWatch(w);
+  renderList(getWatch());
+}
+
+// ---- init ----
+(async function(){
+  await loadFX();
+  setLive(false); // 검색 전엔 중립; 검색 성공 시 live
+  document.getElementById("status").textContent="₩"+FX+" 기준";
+  switchTab("search");
+  document.getElementById("list").innerHTML='<p class="hint">위에서 카드를 검색해봐 (영문 이름).<br>예: <b>charizard</b>, <b>pikachu</b>, <b>mew</b>, <b>umbreon</b><br><br>마음에 드는 카드는 ☆ 눌러 관심목록에.<br>박스·미개봉처럼 검색에 없는 건 관심목록 탭의 ＋ 로 직접 추가.</p>';
+})();
+</script>
+</body>
+</html>
