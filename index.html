@@ -125,7 +125,7 @@
     <div class="search">🔍<input id="q" placeholder="한글/영문 검색 (리자몽, 피카츄, charizard)" onkeydown="if(event.key==='Enter')doSearch()"></div>
   </header>
   <div class="navtabs">
-    <div class="tab on" id="tabTop" onclick="switchTab('top')">🔥 TOP100</div>
+    <div class="tab on" id="tabTop" onclick="switchTab('top')">🔥 TOP10</div>
     <div class="tab" id="tabSearch" onclick="switchTab('search')">🔎 검색</div>
     <div class="tab" id="tabWatch" onclick="switchTab('watch')">⭐ 관심</div>
   </div>
@@ -208,7 +208,7 @@
 const API="https://api.pokemontcg.io/v2";
 const POKEAPI="https://pokeapi.co/api/v2";
 const FXAPI="https://open.er-api.com/v6/latest/USD";
-const TOP_SETS=4, TOP_N=100;
+const TOP_SETS=2, TOP_N=10;
 const won=n=>"₩"+Math.round(n).toLocaleString("ko-KR");
 let FX=1380, tab="top", results=[], topCache=[], current=null, chart=null, apiKey="";
 
@@ -292,9 +292,9 @@ function toCard(c){return {id:c.id,name:c.name,
   img:c.images?c.images.small:"",usd:pickUSD(c),trend:cmTrend(c),manual:false};}
 
 async function loadTop(){
-  const today=new Date().toISOString().slice(0,10),cached=LS.get("pd_top",null);
+  const today=new Date().toISOString().slice(0,10),cached=LS.get("pd_top10",null);
   if(cached&&cached.d===today&&cached.arr.length){topCache=cached.arr;setLive(true);if(tab==="top")renderList(topCache,true);return;}
-  document.getElementById("list").innerHTML='<div class="spin">최신 TOP100 불러오는 중…</div>';
+  document.getElementById("list").innerHTML='<div class="spin">최신 TOP10 불러오는 중…</div>';
   const sets=await apiGet("/sets?orderBy=-releaseDate&pageSize="+TOP_SETS+"&select=id,name,releaseDate");
   if(!sets){setLive(false);if(tab==="top")fallbackTop();return;}
   let pool=[];
@@ -302,9 +302,9 @@ async function loadTop(){
     if(cards)pool=pool.concat(cards);await new Promise(r=>setTimeout(r,250));}
   if(!pool.length){setLive(false);if(tab==="top")fallbackTop();return;}
   const arr=pool.map(toCard).filter(c=>c.usd).sort((a,b)=>b.usd-a.usd).slice(0,TOP_N);
-  topCache=arr;LS.set("pd_top",{d:today,arr});setLive(true);if(tab==="top")renderList(topCache,true);
+  topCache=arr;LS.set("pd_top10",{d:today,arr});setLive(true);if(tab==="top")renderList(topCache,true);
 }
-function fallbackTop(){document.getElementById("list").innerHTML='<p class="hint">⚠️ TOP100을 못 불러왔어요(API 한도/네트워크).<br>⚙️에서 무료 API 키를 넣거나 잠시 후 다시 시도.<br>검색·세대탐색·계산기는 그대로 동작합니다.</p>';}
+function fallbackTop(){document.getElementById("list").innerHTML='<p class="hint">⚠️ TOP10을 못 불러왔어요(API 한도/네트워크).<br>⚙️에서 무료 API 키를 넣거나 잠시 후 다시 시도.<br>검색·세대탐색·계산기는 그대로 동작합니다.</p>';}
 function setLive(v){const s=document.getElementById("status");s.textContent=v?("🟢 ₩"+FX):"🟡 오프라인";s.className="status "+(v?"live":"off");}
 
 async function doSearch(){
