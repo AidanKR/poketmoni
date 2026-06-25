@@ -20,8 +20,10 @@
   header{position:sticky;top:0;z-index:20;background:rgba(11,16,32,.92);backdrop-filter:blur(12px);
     padding:calc(env(safe-area-inset-top) + 14px) 18px 10px;border-bottom:1px solid var(--line);}
   .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;letter-spacing:-.5px;}
+  .menu{font-size:21px;cursor:pointer;}
   .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);}
-  .status{margin-left:auto;font-weight:600;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--sub);}
+  .gear{margin-left:auto;font-size:18px;cursor:pointer;opacity:.8;}
+  .status{font-weight:600;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--sub);margin-left:6px;}
   .status.live{color:var(--good);border-color:rgba(47,212,123,.4);}
   .status.off{color:var(--gold);border-color:rgba(255,204,77,.4);}
   .search{margin-top:12px;display:flex;align-items:center;gap:8px;background:var(--card);
@@ -32,21 +34,41 @@
     background:var(--card);color:var(--sub);border:1px solid var(--line);cursor:pointer;}
   .tab.on{background:var(--accent);color:#fff;border-color:var(--accent);}
   .list{padding:8px 16px 90px;}
-  .hint{color:var(--sub);text-align:center;padding:36px 20px;font-size:13px;line-height:1.7;}
-  .item{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);
-    border-radius:14px;padding:11px;margin-bottom:10px;cursor:pointer;}
-  .thumb{width:50px;height:70px;border-radius:7px;flex-shrink:0;object-fit:cover;background:var(--card2);
-    display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid var(--line);}
+  .hint{color:var(--sub);text-align:center;padding:32px 20px;font-size:13px;line-height:1.8;}
+  .item{display:flex;gap:11px;align-items:center;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:10px;margin-bottom:9px;cursor:pointer;}
+  .rank{font-size:13px;font-weight:800;color:var(--gold);width:24px;text-align:center;flex-shrink:0;}
+  .thumb{width:46px;height:64px;border-radius:6px;flex-shrink:0;object-fit:cover;background:var(--card2);
+    display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--line);}
   .meta{flex:1;min-width:0;}
-  .meta h3{margin:0;font-size:14.5px;font-weight:700;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .meta .set{font-size:11.5px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .vchip{font-size:10px;font-weight:800;padding:3px 7px;border-radius:6px;margin-top:6px;display:inline-block;}
+  .meta h3{margin:0;font-size:14px;font-weight:700;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .meta .set{font-size:11px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .vchip{font-size:9.5px;font-weight:800;padding:2px 6px;border-radius:5px;margin-top:5px;display:inline-block;}
   .vc-import{background:rgba(47,212,123,.15);color:var(--good);}
   .vc-local{background:rgba(91,140,255,.15);color:var(--accent);}
   .vc-none{background:var(--card2);color:var(--sub);}
   .price{text-align:right;flex-shrink:0;}
-  .price .v{font-size:14px;font-weight:800;} .price .s{font-size:11px;color:var(--sub);margin-top:2px;}
-  .star{font-size:20px;flex-shrink:0;padding:4px;cursor:pointer;}
+  .price .v{font-size:13.5px;font-weight:800;} .price .s{font-size:10.5px;color:var(--sub);margin-top:2px;}
+  .star{font-size:19px;flex-shrink:0;padding:3px;cursor:pointer;}
+  .menubtn{font-size:21px;cursor:pointer;}
+  .drawer{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:82%;background:var(--card);z-index:70;
+    transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);overflow-y:auto;
+    border-right:1px solid var(--line);padding:calc(env(safe-area-inset-top) + 14px) 0 40px;}
+  .drawer.open{transform:translateX(0);}
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:65;opacity:0;pointer-events:none;transition:opacity .28s;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .dwhead{font-weight:800;font-size:15px;padding:0 16px 12px;border-bottom:1px solid var(--line);margin-bottom:4px;display:flex;align-items:center;gap:7px;}
+  .dwhead small{color:var(--sub);font-weight:500;font-size:11px;}
+  .trow{padding:9px 16px;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:7px;border-bottom:1px solid rgba(42,51,87,.3);}
+  .trow.gen{font-weight:800;}
+  .trow.poke{font-weight:600;color:var(--sub);padding-left:28px;font-size:13px;}
+  .trow.card{color:var(--text);padding-left:42px;font-size:12.5px;}
+  .tw{display:inline-block;width:15px;text-align:center;color:var(--gold);font-weight:800;flex-shrink:0;}
+  .tnum{color:var(--sub);font-size:10px;margin-left:auto;}
+  .tprice{color:var(--good);font-weight:700;margin-left:auto;font-size:11px;}
+  .tdot{color:var(--sub);width:15px;text-align:center;flex-shrink:0;}
+  .tchildren{background:rgba(0,0,0,.13);}
+  .tload{padding:10px 28px;color:var(--sub);font-size:12px;}
   .detail{position:fixed;inset:0;background:var(--bg);z-index:50;overflow-y:auto;transform:translateX(100%);
     transition:transform .28s cubic-bezier(.4,0,.2,1);max-width:480px;margin:0 auto;}
   .detail.open{transform:translateX(0);}
@@ -83,29 +105,51 @@
   .note{font-size:11px;color:var(--sub);line-height:1.6;margin-top:9px;}
   .btn{display:block;width:100%;padding:13px;border-radius:12px;border:none;font-family:inherit;
     font-size:15px;font-weight:800;cursor:pointer;margin-top:8px;}
-  .btn-p{background:var(--accent);color:#fff;} .btn-g{background:var(--card2);color:var(--text);border:1px solid var(--line);}
+  .btn-g{background:var(--card2);color:var(--text);border:1px solid var(--line);}
   .disclaimer{font-size:10.5px;color:var(--sub);text-align:center;padding:4px 24px 28px;line-height:1.6;opacity:.85;}
   .fab{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 18px);right:max(18px,calc(50% - 222px));
     width:56px;height:56px;border-radius:50%;background:var(--gold);color:#1a1300;font-size:30px;font-weight:700;
     border:none;box-shadow:0 6px 20px rgba(255,204,77,.4);cursor:pointer;z-index:30;display:none;}
   .spin{text-align:center;padding:40px;color:var(--sub);}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:80;display:none;align-items:center;justify-content:center;padding:24px;}
+  .modal.open{display:flex;}
+  .mbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;max-width:360px;width:100%;}
+  .mbox h3{margin:0 0 6px;font-size:16px;} .mbox p{font-size:12px;color:var(--sub);line-height:1.6;margin:0 0 12px;}
+  .mbox input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:10px;font-size:14px;font-family:inherit;margin-bottom:12px;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><span class="dot"></span>포켓딜<span class="status" id="status">연결 확인중…</span></div>
-    <div class="search">🔍<input id="q" placeholder="카드 검색 (charizard, pikachu, mew...)" onkeydown="if(event.key==='Enter')doSearch()"></div>
+    <div class="brand"><span class="menu" onclick="openDrawer()">☰</span><span class="dot"></span>포켓딜<span class="status" id="status">…</span><span class="gear" onclick="openSettings()">⚙️</span></div>
+    <div class="search">🔍<input id="q" placeholder="한글/영문 검색 (리자몽, 피카츄, charizard)" onkeydown="if(event.key==='Enter')doSearch()"></div>
   </header>
   <div class="navtabs">
-    <div class="tab on" id="tabSearch" onclick="switchTab('search')">🔎 검색</div>
-    <div class="tab" id="tabWatch" onclick="switchTab('watch')">⭐ 관심목록</div>
+    <div class="tab on" id="tabTop" onclick="switchTab('top')">🔥 TOP100</div>
+    <div class="tab" id="tabSearch" onclick="switchTab('search')">🔎 검색</div>
+    <div class="tab" id="tabWatch" onclick="switchTab('watch')">⭐ 관심</div>
   </div>
   <div class="list" id="list"></div>
-  <p class="disclaimer">해외 시세·이미지: pokemontcg.io (무료) · 환율: exchangerate-api (무료) · 국내 시세는 직접 입력하면 이 폰에 저장됩니다. 관세 계산은 참고용이에요.</p>
+  <p class="disclaimer">시세·이미지: pokemontcg.io · 세대목록: PokéAPI · 환율: exchangerate-api · 국내 시세는 직접 입력→이 폰에 저장. 관세 계산은 참고용입니다.</p>
 </div>
 
 <button class="fab" id="fab" onclick="addManual()">＋</button>
+
+<div class="backdrop" id="backdrop" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="dwhead">🗂️ 세대별 탐색 <small>＋ 눌러 펼치기</small></div>
+  <div id="tree"></div>
+</div>
+
+<div class="modal" id="settings">
+  <div class="mbox">
+    <h3>⚙️ API 키 (선택)</h3>
+    <p>dev.pokemontcg.io 에서 무료 발급. 입력하면 속도·한도가 좋아져요. 키는 이 폰에만 저장되고 외부로 안 나갑니다.</p>
+    <input id="apiKey" placeholder="X-Api-Key (선택)">
+    <button class="btn btn-g" onclick="saveSettings()">저장</button>
+    <button class="btn btn-g" onclick="closeSettings()" style="margin-top:6px">닫기</button>
+  </div>
+</div>
 
 <div class="detail" id="detail">
   <div class="dhead"><span class="back" onclick="closeDetail()">‹</span><h2 id="dTitle">카드</h2><span class="star" id="dStar" onclick="toggleStar()">☆</span></div>
@@ -120,13 +164,11 @@
         </div>
       </div>
     </div>
-
     <div class="sec">
       <h4>📈 가격 추이 (원화 환산)</h4>
       <canvas id="chart" height="190"></canvas>
       <p class="note" id="chartNote"></p>
     </div>
-
     <div class="sec calc">
       <h4>🧮 총비용 · 국내구매 vs 해외직구</h4>
       <div class="grid2">
@@ -163,128 +205,206 @@
 </div>
 
 <script>
-const API="https://api.pokemontcg.io/v2/cards";
+const API="https://api.pokemontcg.io/v2";
+const POKEAPI="https://pokeapi.co/api/v2";
 const FXAPI="https://open.er-api.com/v6/latest/USD";
+const TOP_SETS=4, TOP_N=100;
 const won=n=>"₩"+Math.round(n).toLocaleString("ko-KR");
-let FX=1380, LIVE=false, tab="search", results=[], current=null, chart=null;
+let FX=1380, tab="top", results=[], topCache=[], current=null, chart=null, apiKey="";
 
-// ---- localStorage helpers ----
-const LS={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},
-  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
-const getWatch=()=>LS.get("pd_watch",[]);
-const setWatch=w=>LS.set("pd_watch",w);
-const getLocalPrice=id=>LS.get("pd_lc_"+id,null);
-const setLocalPrice=(id,v)=>LS.set("pd_lc_"+id,v);
+const KO2EN={
+"이상해씨":"Bulbasaur","이상해풀":"Ivysaur","이상해꽃":"Venusaur","파이리":"Charmander","리자드":"Charmeleon",
+"리자몽":"Charizard","꼬부기":"Squirtle","어니부기":"Wartortle","거북왕":"Blastoise","캐터피":"Caterpie",
+"단데기":"Metapod","버터플":"Butterfree","뿔충이":"Weedle","딱충이":"Kakuna","독침붕":"Beedrill",
+"구구":"Pidgey","피죤":"Pidgeotto","피죤투":"Pidgeot","꼬렛":"Rattata","레트라":"Raticate",
+"깨비참":"Spearow","깨비드릴조":"Fearow","아보크":"Arbok","아보":"Ekans","피카츄":"Pikachu","라이츄":"Raichu",
+"모래두지":"Sandshrew","고지":"Sandslash","니드리나":"Nidorina","니드퀸":"Nidoqueen","니드리노":"Nidorino","니드킹":"Nidoking",
+"삐삐":"Clefairy","픽시":"Clefable","식스테일":"Vulpix","나인테일":"Ninetales","푸린":"Jigglypuff","푸크린":"Wigglytuff",
+"주뱃":"Zubat","골뱃":"Golbat","뚜벅쵸":"Oddish","냄새꼬":"Gloom","라플레시아":"Vileplume","파라섹트":"Parasect","파라스":"Paras",
+"콘팡":"Venonat","도나리":"Venomoth","디그다":"Diglett","닥트리오":"Dugtrio","나옹":"Meowth","페르시온":"Persian",
+"고라파덕":"Psyduck","골덕":"Golduck","망키":"Mankey","성원숭":"Primeape","가디":"Growlithe","윈디":"Arcanine",
+"발챙이":"Poliwag","슈륙챙이":"Poliwhirl","강챙이":"Poliwrath","캐이시":"Abra","윤겔라":"Kadabra","후딘":"Alakazam",
+"알통몬":"Machop","근육몬":"Machoke","괴력몬":"Machamp","모다피":"Bellsprout","우츠동":"Weepinbell","우츠보트":"Victreebel",
+"왕눈해":"Tentacool","독파리":"Tentacruel","꼬마돌":"Geodude","데구리":"Graveler","딱구리":"Golem","포니타":"Ponyta","날쌩마":"Rapidash",
+"야도란":"Slowbro","야돈":"Slowpoke","레어코일":"Magneton","코일":"Magnemite","파오리":"Farfetch","두트리오":"Dodrio","두두":"Doduo",
+"쥬레곤":"Dewgong","쥬쥬":"Seel","질뻐기":"Muk","질퍽이":"Grimer","파르셀":"Cloyster","셀러":"Shellder",
+"고우스트":"Haunter","고오스":"Gastly","팬텀":"Gengar","롱스톤":"Onix","슬리퍼":"Hypno","슬리프":"Drowzee",
+"킹크랩":"Kingler","크랩":"Krabby","붐볼":"Electrode","찌리리공":"Voltorb","나시":"Exeggutor","아라리":"Exeggcute",
+"텅구리":"Marowak","탕구리":"Cubone","시라소몬":"Hitmonlee","홍수몬":"Hitmonchan","내루미":"Lickitung",
+"또도가스":"Weezing","또가스":"Koffing","코뿌리":"Rhydon","뿔카노":"Rhyhorn","럭키":"Chansey","덩쿠리":"Tangela","캥카":"Kangaskhan",
+"왕콘치":"Seaking","콘치":"Goldeen","시드라":"Seadra","쏘드라":"Horsea","아쿠스타":"Starmie","별가사리":"Staryu",
+"마임맨":"Mr. Mime","스라크":"Scyther","루주라":"Jynx","에레브":"Electabuzz","마그마":"Magmar","쁘사이저":"Pinsir","켄타로스":"Tauros",
+"잉어킹":"Magikarp","갸라도스":"Gyarados","라프라스":"Lapras","메타몽":"Ditto",
+"이브이":"Eevee","샤미드":"Vaporeon","쥬피썬더":"Jolteon","부스터":"Flareon","폴리곤":"Porygon",
+"암스타":"Omastar","암나이트":"Omanyte","투구푸스":"Kabutops","투구":"Kabuto","프테라":"Aerodactyl","잠만보":"Snorlax",
+"프리져":"Articuno","썬더":"Zapdos","파이어":"Moltres","미뇽":"Dratini","신뇽":"Dragonair","망나뇽":"Dragonite","뮤츠":"Mewtwo","뮤":"Mew",
+"블래키":"Umbreon","에이피":"Espeon","리피아":"Leafeon","글레이시아":"Glaceon","님피아":"Sylveon",
+"루기아":"Lugia","칠색조":"Ho-Oh","세레비":"Celebi","가이오가":"Kyogre","그란돈":"Groudon","레쿠쟈":"Rayquaza",
+"가디안":"Gardevoir","한카리아스":"Garchomp","루카리오":"Lucario","디아루가":"Dialga","펄기아":"Palkia","기라티나":"Giratina",
+"다크라이":"Darkrai","아르세우스":"Arceus","조로아크":"Zoroark","레시라무":"Reshiram","제크로무":"Zekrom","큐레무":"Kyurem",
+"제르네아스":"Xerneas","이벨타르":"Yveltal","솔가레오":"Solgaleo","루나아라":"Lunala","미미큐":"Mimikyu",
+"자시안":"Zacian","자마젠타":"Zamazenta","마릴":"Marill","토게피":"Togepi","피츄":"Pichu","마샤도":"Marshadow"
+};
+const KO_KEYS=Object.keys(KO2EN).sort((a,b)=>b.length-a.length);
+function toEnglish(q){
+  if(!/[가-힣]/.test(q))return q;
+  let out=q;
+  for(const ko of KO_KEYS){if(out.includes(ko))out=out.split(ko).join(" "+KO2EN[ko]+" ");}
+  out=out.replace(/[가-힣]+/g," ").replace(/\s+/g," ").trim();return out;
+}
+const EN2KO={};
+for(const ko in KO2EN){const k=KO2EN[ko].toLowerCase().replace(/[^a-z0-9]/g,"");if(!EN2KO[k])EN2KO[k]=ko;}
+function pretty(slug){return slug.split("-").map(w=>w?w[0].toUpperCase()+w.slice(1):w).join(" ");}
+function pokeLabel(slug){const k=slug.toLowerCase().replace(/[^a-z0-9]/g,"");return EN2KO[k]||pretty(slug);}
+
+const LS={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
+const getWatch=()=>LS.get("pd_watch",[]); const setWatch=w=>LS.set("pd_watch",w);
+const getLocalPrice=id=>LS.get("pd_lc_"+id,null); const setLocalPrice=(id,v)=>LS.set("pd_lc_"+id,v);
 const getHist=id=>LS.get("pd_hist_"+id,[]);
-function logSnapshot(c,usd,krw){
-  const h=getHist(c.id), today=new Date().toISOString().slice(0,10);
-  if(h.length && h[h.length-1].d===today){h[h.length-1]={d:today,usd,krw};}
-  else h.push({d:today,usd,krw});
-  if(h.length>120)h.shift();
-  LS.set("pd_hist_"+c.id,h);
-  return h;
-}
+function logSnapshot(c,usd,krw){const h=getHist(c.id),today=new Date().toISOString().slice(0,10);
+  if(h.length&&h[h.length-1].d===today)h[h.length-1]={d:today,usd,krw};else h.push({d:today,usd,krw});
+  if(h.length>120)h.shift();LS.set("pd_hist_"+c.id,h);return h;}
 
-// ---- 환율 ----
-async function loadFX(){
-  const cached=LS.get("pd_fx",null), today=new Date().toISOString().slice(0,10);
-  if(cached && cached.d===today){FX=cached.v;return;}
-  try{
-    const r=await fetch(FXAPI); const j=await r.json();
-    if(j.rates&&j.rates.KRW){FX=Math.round(j.rates.KRW); LS.set("pd_fx",{d:today,v:FX});}
-  }catch(e){ if(cached)FX=cached.v; }
+async function apiGet(path){
+  const headers=apiKey?{"X-Api-Key":apiKey}:{};
+  for(let i=0;i<2;i++){
+    try{const r=await fetch(API+path,{headers});if(r.ok){const j=await r.json();if(j&&j.data)return j.data;}}catch(e){}
+    await new Promise(s=>setTimeout(s,500));
+  }return null;
 }
+async function loadFX(){const cached=LS.get("pd_fx",null),today=new Date().toISOString().slice(0,10);
+  if(cached&&cached.d===today){FX=cached.v;return;}
+  try{const r=await fetch(FXAPI);const j=await r.json();if(j.rates&&j.rates.KRW){FX=Math.round(j.rates.KRW);LS.set("pd_fx",{d:today,v:FX});}}
+  catch(e){if(cached)FX=cached.v;}}
 
-// ---- 관세 엔진 ----
-function importTotal(usd,shipUsd,fx,dutyPct,freeLimit){
-  const cardKRW=usd*fx, shipKRW=shipUsd*fx; let duty=0,vat=0,taxed=false;
-  if(usd>freeLimit){taxed=true; const cif=(usd+shipUsd)*fx; duty=cif*(dutyPct/100); vat=(cif+duty)*0.10;}
-  return {cardKRW,shipKRW,tax:duty+vat,duty,vat,taxed,total:cardKRW+shipKRW+duty+vat};
-}
-function verdict(localKRW,usd){
-  if(!localKRW||!usd)return null;
-  const lt=localKRW+3000, im=importTotal(usd,15,FX,8,200);
-  return lt-im.total; // + → 직구 이득
-}
+function importTotal(usd,shipUsd,fx,dutyPct,freeLimit){const cardKRW=usd*fx,shipKRW=shipUsd*fx;let duty=0,vat=0,taxed=false;
+  if(usd>freeLimit){taxed=true;const cif=(usd+shipUsd)*fx;duty=cif*(dutyPct/100);vat=(cif+duty)*0.10;}
+  return {cardKRW,shipKRW,tax:duty+vat,duty,vat,taxed,total:cardKRW+shipKRW+duty+vat};}
+function verdict(localKRW,usd){if(!localKRW||!usd)return null;return (localKRW+3000)-importTotal(usd,15,FX,8,200).total;}
 
-// ---- API 시세 추출 ----
-function pickUSD(card){
-  const tp=card.tcgplayer&&card.tcgplayer.prices;
-  if(tp){for(const k in tp){const p=tp[k]; if(p&&(p.market||p.mid))return p.market||p.mid;}}
-  const cm=card.cardmarket&&card.cardmarket.prices;
-  if(cm&&cm.trendPrice)return cm.trendPrice;
-  return null;
-}
-function cmTrend(card){ // [30일전,7일전,현재] USD
-  const cm=card.cardmarket&&card.cardmarket.prices;
-  if(cm&&cm.avg30)return [cm.avg30,cm.avg7||cm.avg30,cm.avg1||cm.trendPrice||cm.avg7];
-  return null;
-}
+function pickUSD(card){const tp=card.tcgplayer&&card.tcgplayer.prices;
+  if(tp)for(const k in tp){const p=tp[k];if(p&&(p.market||p.mid))return p.market||p.mid;}
+  const cm=card.cardmarket&&card.cardmarket.prices;if(cm&&cm.trendPrice)return cm.trendPrice;return null;}
+function cmTrend(card){const cm=card.cardmarket&&card.cardmarket.prices;
+  if(cm&&cm.avg30)return [cm.avg30,cm.avg7||cm.avg30,cm.avg1||cm.trendPrice||cm.avg7];return null;}
+function toCard(c){return {id:c.id,name:c.name,
+  set:(c.set?c.set.name:"")+(c.set&&c.set.releaseDate?" · "+c.set.releaseDate.slice(0,4):""),
+  img:c.images?c.images.small:"",usd:pickUSD(c),trend:cmTrend(c),manual:false};}
 
-// ---- 검색 ----
+async function loadTop(){
+  const today=new Date().toISOString().slice(0,10),cached=LS.get("pd_top",null);
+  if(cached&&cached.d===today&&cached.arr.length){topCache=cached.arr;setLive(true);if(tab==="top")renderList(topCache,true);return;}
+  document.getElementById("list").innerHTML='<div class="spin">최신 TOP100 불러오는 중…</div>';
+  const sets=await apiGet("/sets?orderBy=-releaseDate&pageSize="+TOP_SETS+"&select=id,name,releaseDate");
+  if(!sets){setLive(false);if(tab==="top")fallbackTop();return;}
+  let pool=[];
+  for(const s of sets){const cards=await apiGet("/cards?q=set.id:"+s.id+"&pageSize=250&select=id,name,set,rarity,images,tcgplayer,cardmarket");
+    if(cards)pool=pool.concat(cards);await new Promise(r=>setTimeout(r,250));}
+  if(!pool.length){setLive(false);if(tab==="top")fallbackTop();return;}
+  const arr=pool.map(toCard).filter(c=>c.usd).sort((a,b)=>b.usd-a.usd).slice(0,TOP_N);
+  topCache=arr;LS.set("pd_top",{d:today,arr});setLive(true);if(tab==="top")renderList(topCache,true);
+}
+function fallbackTop(){document.getElementById("list").innerHTML='<p class="hint">⚠️ TOP100을 못 불러왔어요(API 한도/네트워크).<br>⚙️에서 무료 API 키를 넣거나 잠시 후 다시 시도.<br>검색·세대탐색·계산기는 그대로 동작합니다.</p>';}
+function setLive(v){const s=document.getElementById("status");s.textContent=v?("🟢 ₩"+FX):"🟡 오프라인";s.className="status "+(v?"live":"off");}
+
 async function doSearch(){
-  const q=document.getElementById("q").value.trim();
-  if(!q)return;
+  const raw=document.getElementById("q").value.trim();if(!raw)return;
+  const eng=toEnglish(raw);tab="search";syncTabs();
   const list=document.getElementById("list");
-  list.innerHTML='<div class="spin">불러오는 중…</div>';
-  tab="search"; syncTabs();
-  try{
-    const url=`${API}?q=name:"${encodeURIComponent(q)}"&pageSize=24&orderBy=-set.releaseDate`;
-    const r=await fetch(url); const j=await r.json();
-    results=(j.data||[]).map(c=>({
-      id:c.id,name:c.name,set:(c.set?c.set.name:"")+" · "+(c.set?c.set.releaseDate:""),
-      img:c.images?c.images.small:"",usd:pickUSD(c),trend:cmTrend(c),manual:false
-    }));
-    setLive(true);
-    renderList(results);
-  }catch(e){ setLive(false); list.innerHTML='<p class="hint">⚠️ 실시간 연결 차단됨(파일 모드 CORS). 사파리에서 열거나 잠시 후 재시도. 관심목록·계산기는 그대로 동작해요.</p>'; }
+  if(/[가-힣]/.test(raw)&&!eng){list.innerHTML='<p class="hint">사전에 없는 한글 이름이에요.<br>영문으로 검색하거나, 좌측 ☰ 세대탐색을 써보세요.</p>';return;}
+  list.innerHTML='<div class="spin">"'+(eng||raw)+'" 검색 중…</div>';
+  const data=await apiGet('/cards?q=name:"'+encodeURIComponent(eng||raw)+'"&pageSize=30&orderBy=-set.releaseDate&select=id,name,set,rarity,images,tcgplayer,cardmarket');
+  if(!data){setLive(false);list.innerHTML='<p class="hint">⚠️ 검색 실패(API 한도). ⚙️ 키 등록 또는 잠시 후 재시도.</p>';return;}
+  setLive(true);results=data.map(toCard);renderList(results);
 }
-function setLive(v){LIVE=v;const s=document.getElementById("status");
-  s.textContent=v?("🟢 실시간 ₩"+FX):"🟡 오프라인";
-  s.className="status "+(v?"live":"off");}
 
-// ---- 리스트 렌더 ----
-function renderList(arr){
+function renderList(arr,ranked){
   const list=document.getElementById("list");
   if(!arr.length){list.innerHTML='<p class="hint">결과가 없어요.</p>';return;}
-  list.innerHTML="";
-  const watch=getWatch().map(w=>w.id);
-  arr.forEach(c=>{
-    const lc=getLocalPrice(c.id), diff=verdict(lc,c.usd);
+  list.innerHTML="";const watch=getWatch().map(w=>w.id);
+  arr.forEach((c,i)=>{
+    const lc=getLocalPrice(c.id),diff=verdict(lc,c.usd);
     let chip='<span class="vchip vc-none">국내가 입력</span>';
-    if(diff!==null)chip=diff>0?`<span class="vchip vc-import">직구 ${won(Math.abs(diff))} 이득</span>`
-                              :`<span class="vchip vc-local">국내 ${won(Math.abs(diff))} 이득</span>`;
-    const starred=watch.includes(c.id);
-    const el=document.createElement("div"); el.className="item";
-    el.innerHTML=`<div class="thumb-w" onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
-        ${c.img?`<img class="thumb" src="${c.img}">`:`<div class="thumb">🃏</div>`}</div>
-      <div class="meta" onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
-        <h3>${c.name}</h3><div class="set">${c.set}</div>${chip}</div>
-      <div class="price" onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
-        <div class="v">${c.usd?"$"+c.usd.toFixed(2):"—"}</div>
-        <div class="s">${c.usd?won(c.usd*FX):""}</div></div>
-      <div class="star" onclick='quickStar(${JSON.stringify(c).replace(/'/g,"&#39;")})'>${starred?"★":"☆"}</div>`;
+    if(diff!==null)chip=diff>0?`<span class="vchip vc-import">직구 ${won(Math.abs(diff))} 이득</span>`:`<span class="vchip vc-local">국내 ${won(Math.abs(diff))} 이득</span>`;
+    const cj=JSON.stringify(c).replace(/'/g,"&#39;");
+    const el=document.createElement("div");el.className="item";
+    el.innerHTML=`${ranked?`<div class="rank">${i+1}</div>`:""}
+      <div onclick='openDetail(${cj})'>${c.img?`<img class="thumb" src="${c.img}" loading="lazy">`:`<div class="thumb">🃏</div>`}</div>
+      <div class="meta" onclick='openDetail(${cj})'><h3>${c.name}</h3><div class="set">${c.set}</div>${chip}</div>
+      <div class="price" onclick='openDetail(${cj})'><div class="v">${c.usd?"$"+c.usd.toFixed(2):"—"}</div><div class="s">${c.usd?won(c.usd*FX):""}</div></div>
+      <div class="star" onclick='quickStar(${cj})'>${watch.includes(c.id)?"★":"☆"}</div>`;
     list.appendChild(el);
   });
 }
 
-// ---- 탭 ----
 function switchTab(t){tab=t;syncTabs();
-  if(t==="watch")renderList(getWatch()); else renderList(results);}
-function syncTabs(){
+  if(t==="top"){topCache.length?renderList(topCache,true):loadTop();}
+  else if(t==="watch")renderList(getWatch());
+  else{results.length?renderList(results):document.getElementById("list").innerHTML='<p class="hint">위에서 검색해봐.<br>한글: <b>리자몽 ex</b>, <b>피카츄</b>, <b>뮤츠</b><br>영문: <b>umbreon</b>, <b>moonbreon</b><br><br>또는 좌측 ☰ 로 세대별 탐색.</p>';}
+}
+function syncTabs(){document.getElementById("tabTop").classList.toggle("on",tab==="top");
   document.getElementById("tabSearch").classList.toggle("on",tab==="search");
   document.getElementById("tabWatch").classList.toggle("on",tab==="watch");
-  document.getElementById("fab").style.display=tab==="watch"?"block":"none";
+  document.getElementById("fab").style.display=tab==="watch"?"block":"none";}
+function quickStar(c){let w=getWatch();if(w.find(x=>x.id===c.id))w=w.filter(x=>x.id!==c.id);else w.push(c);
+  setWatch(w);renderList(tab==="watch"?getWatch():(tab==="top"?topCache:results),tab==="top");}
+
+const GENS=[{id:1,r:"관동"},{id:2,r:"성도"},{id:3,r:"호연"},{id:4,r:"신오"},{id:5,r:"하나"},{id:6,r:"칼로스"},{id:7,r:"알로라"},{id:8,r:"가라르"},{id:9,r:"팔데아"}];
+function openDrawer(){document.getElementById("drawer").classList.add("open");document.getElementById("backdrop").classList.add("open");}
+function closeDrawer(){document.getElementById("drawer").classList.remove("open");document.getElementById("backdrop").classList.remove("open");}
+function renderTree(){
+  const t=document.getElementById("tree");t.innerHTML="";
+  GENS.forEach(g=>{
+    const row=document.createElement("div");row.className="trow gen";
+    row.innerHTML='<span class="tw">＋</span> '+g.id+'세대 <span style="color:var(--sub);font-weight:500;font-size:11px">('+g.r+')</span>';
+    const kids=document.createElement("div");kids.className="tchildren";kids.style.display="none";kids.dataset.loaded="0";
+    row.onclick=()=>toggleGen(g.id,row,kids);
+    t.appendChild(row);t.appendChild(kids);
+  });
 }
-function quickStar(c){
-  let w=getWatch();
-  if(w.find(x=>x.id===c.id))w=w.filter(x=>x.id!==c.id); else w.push(c);
-  setWatch(w); renderList(tab==="watch"?getWatch():results);
+async function genSpecies(id){
+  const ck="pd_gen_"+id,c=LS.get(ck,null);if(c)return c;
+  try{const r=await fetch(POKEAPI+"/generation/"+id);const j=await r.json();
+    const arr=(j.pokemon_species||[]).map(s=>({slug:s.name,num:+s.url.split("/").filter(Boolean).pop()})).sort((a,b)=>a.num-b.num);
+    LS.set(ck,arr);return arr;}catch(e){return null;}
+}
+async function toggleGen(id,row,kids){
+  const open=kids.style.display!=="none";
+  if(open){kids.style.display="none";row.querySelector(".tw").textContent="＋";return;}
+  row.querySelector(".tw").textContent="－";kids.style.display="block";
+  if(kids.dataset.loaded==="1")return;
+  kids.innerHTML='<div class="tload">불러오는 중…</div>';
+  const sp=await genSpecies(id);
+  if(!sp){kids.innerHTML='<div class="tload">불러오기 실패(네트워크)</div>';kids.dataset.loaded="0";return;}
+  kids.innerHTML="";kids.dataset.loaded="1";
+  sp.forEach(s=>{
+    const eng=pretty(s.slug),label=pokeLabel(s.slug);
+    const pr=document.createElement("div");pr.className="trow poke";
+    pr.innerHTML='<span class="tw">＋</span> '+label+' <span class="tnum">#'+s.num+'</span>';
+    const pk=document.createElement("div");pk.className="tchildren";pk.style.display="none";pk.dataset.loaded="0";
+    pr.onclick=()=>togglePoke(eng,pr,pk);
+    kids.appendChild(pr);kids.appendChild(pk);
+  });
+}
+async function togglePoke(eng,row,kids){
+  const open=kids.style.display!=="none";
+  if(open){kids.style.display="none";row.querySelector(".tw").textContent="＋";return;}
+  row.querySelector(".tw").textContent="－";kids.style.display="block";
+  if(kids.dataset.loaded==="1")return;
+  kids.innerHTML='<div class="tload">카드 찾는 중…</div>';
+  const data=await apiGet('/cards?q=name:"'+encodeURIComponent(eng)+'"&pageSize=40&orderBy=-set.releaseDate&select=id,name,set,rarity,images,tcgplayer,cardmarket');
+  if(!data){kids.innerHTML='<div class="tload">실패(API 한도) — 잠시 후 다시</div>';kids.dataset.loaded="0";return;}
+  if(!data.length){kids.innerHTML='<div class="tload">카드 없음</div>';return;}
+  kids.innerHTML="";kids.dataset.loaded="1";
+  data.map(toCard).forEach(c=>{
+    const cr=document.createElement("div");cr.className="trow card";
+    cr.innerHTML='<span class="tdot">·</span> '+c.name+' <span class="tprice">'+(c.usd?"$"+c.usd.toFixed(0):"—")+'</span>';
+    cr.onclick=()=>{closeDrawer();openDetail(c);};
+    kids.appendChild(cr);
+  });
 }
 
-// ---- 상세 ----
-function openDetail(c){
-  current=c;
+function openDetail(c){current=c;
   document.getElementById("dTitle").textContent=c.name;
   document.getElementById("dName").textContent=c.name;
   document.getElementById("dSet").textContent=c.set;
@@ -297,28 +417,20 @@ function openDetail(c){
   document.getElementById("cIntl").value=c.usd||"";
   document.getElementById("cFx").value=FX;
   document.getElementById("dStar").textContent=getWatch().find(x=>x.id===c.id)?"★":"☆";
-  drawChart(c,lc); calc();
-  document.getElementById("detail").classList.add("open");
+  drawChart(c,lc);calc();document.getElementById("detail").classList.add("open");
 }
 function closeDetail(){document.getElementById("detail").classList.remove("open");
-  if(tab==="watch")renderList(getWatch()); else renderList(results);}
-function toggleStar(){quickStar(current);
-  document.getElementById("dStar").textContent=getWatch().find(x=>x.id===current.id)?"★":"☆";}
+  renderList(tab==="watch"?getWatch():(tab==="top"?topCache:results),tab==="top");}
+function toggleStar(){quickStar(current);document.getElementById("dStar").textContent=getWatch().find(x=>x.id===current.id)?"★":"☆";}
 
 function drawChart(c,lc){
-  let labels=[], intlData=[], localData=[];
-  const hist=getHist(c.id);
-  if(c.usd){const h=logSnapshot(c,c.usd,lc||null);} // 오늘 스냅샷 기록
+  let labels=[],intlData=[],localData=[];
+  if(c.usd)logSnapshot(c,c.usd,lc||null);
   const h2=getHist(c.id);
-  if(h2.length>=2){
-    h2.forEach(p=>{labels.push(p.d.slice(5)); intlData.push(importTotal(p.usd,15,FX,8,200).total);
-      localData.push(p.krw?p.krw+3000:null);});
-  }else if(c.trend){
-    labels=["30일 전","7일 전","현재"];
-    intlData=c.trend.map(u=>importTotal(u,15,FX,8,200).total);
-    localData=[null,null,lc?lc+3000:null];
-  }else{labels=["현재"]; intlData=[c.usd?importTotal(c.usd,15,FX,8,200).total:0]; localData=[lc?lc+3000:null];}
-  const ctx=document.getElementById("chart"); if(chart)chart.destroy();
+  if(h2.length>=2){h2.forEach(p=>{labels.push(p.d.slice(5));intlData.push(importTotal(p.usd,15,FX,8,200).total);localData.push(p.krw?p.krw+3000:null);});}
+  else if(c.trend){labels=["30일 전","7일 전","현재"];intlData=c.trend.map(u=>importTotal(u,15,FX,8,200).total);localData=[null,null,lc?lc+3000:null];}
+  else{labels=["현재"];intlData=[c.usd?importTotal(c.usd,15,FX,8,200).total:0];localData=[lc?lc+3000:null];}
+  const ctx=document.getElementById("chart");if(chart)chart.destroy();
   chart=new Chart(ctx,{type:"line",data:{labels,datasets:[
     {label:"직구 총비용",data:intlData,borderColor:"#2fd47b",backgroundColor:"rgba(47,212,123,.08)",tension:.35,fill:true,pointRadius:3,borderWidth:2.5,spanGaps:true},
     {label:"국내 총비용",data:localData,borderColor:"#5b8cff",backgroundColor:"rgba(91,140,255,.1)",tension:.35,fill:true,pointRadius:3,borderWidth:2.5,spanGaps:true}
@@ -327,24 +439,20 @@ function drawChart(c,lc){
       tooltip:{callbacks:{label:x=>x.dataset.label+": "+(x.parsed.y?won(x.parsed.y):"—")}}},
     scales:{y:{ticks:{color:"#9aa6cf",font:{family:"Pretendard"},callback:v=>"₩"+Math.round(v/1000)+"k"},grid:{color:"rgba(42,51,87,.5)"}},
       x:{ticks:{color:"#9aa6cf",font:{family:"Pretendard"}},grid:{display:false}}}}});
-  document.getElementById("chartNote").textContent = h2.length>=2
-    ? "앱을 열 때마다 그날 시세가 기록돼서 진짜 변동 그래프가 쌓이는 중이야. 두 선이 만나는 지점이 이득 전환점."
-    : (c.trend?"cardmarket 30/7/1일 평균 기반 단기 추이. 앱을 자주 열수록 실제 히스토리가 길게 쌓여.":"히스토리 누적 중 — 며칠 더 열어봐.");
+  document.getElementById("chartNote").textContent=h2.length>=2
+    ?"앱을 열 때마다 그날 시세가 기록돼 진짜 변동 그래프가 쌓이는 중. 두 선이 만나는 점이 이득 전환점."
+    :(c.trend?"cardmarket 30/7/1일 평균 기반 단기 추이. 자주 열수록 실제 히스토리가 길어져.":"히스토리 누적 중 — 며칠 더 열어봐.");
 }
 
-function calc(){
-  if(!current)return;
-  const L=+document.getElementById("cLocal").value||0, Ls=+document.getElementById("cLocalShip").value||0;
-  const I=+document.getElementById("cIntl").value||0, Is=+document.getElementById("cIntlShip").value||0;
-  const fx=+document.getElementById("cFx").value||FX, duty=+document.getElementById("cDuty").value||0;
+function calc(){if(!current)return;
+  const L=+document.getElementById("cLocal").value||0,Ls=+document.getElementById("cLocalShip").value||0;
+  const I=+document.getElementById("cIntl").value||0,Is=+document.getElementById("cIntlShip").value||0;
+  const fx=+document.getElementById("cFx").value||FX,duty=+document.getElementById("cDuty").value||0;
   const lim=+document.getElementById("cMethod").value||200;
-  const lt=L+Ls, im=importTotal(I,Is,fx,duty,lim), diff=lt-im.total;
-  document.getElementById("kCard").textContent=won(L);
-  document.getElementById("kShip").textContent=won(Ls);
-  document.getElementById("kTot").textContent=won(lt);
-  document.getElementById("iCard").textContent=won(im.cardKRW);
-  document.getElementById("iShip").textContent=won(im.shipKRW);
-  document.getElementById("iTax").textContent=im.taxed?won(im.tax):"면세 ₩0";
+  const lt=L+Ls,im=importTotal(I,Is,fx,duty,lim),diff=lt-im.total;
+  document.getElementById("kCard").textContent=won(L);document.getElementById("kShip").textContent=won(Ls);
+  document.getElementById("kTot").textContent=won(lt);document.getElementById("iCard").textContent=won(im.cardKRW);
+  document.getElementById("iShip").textContent=won(im.shipKRW);document.getElementById("iTax").textContent=im.taxed?won(im.tax):"면세 ₩0";
   document.getElementById("iTot").textContent=won(im.total);
   const r=document.getElementById("result");
   if(!L){r.className="result";document.getElementById("rTag").textContent="국내 시세를 입력하면";
@@ -357,33 +465,25 @@ function calc(){
     ?`⚠️ $${I} > 면세 $${lim} → <b>전체 과세</b>. 관세 ${won(im.duty)} + 부가세 ${won(im.vat)}. 합산과세 주의.`
     :`✅ $${I} ≤ 면세 $${lim} → 면제. 1달러만 넘겨도 전체 과세되니 장바구니 쪼개기.`;
 }
-function saveLocal(){
-  if(!current)return;
-  const v=+document.getElementById("cLocal").value||0;
-  setLocalPrice(current.id,v);
-  document.getElementById("dLc").textContent=v?won(v):"미입력";
-  const h=getHist(current.id);
-  if(h.length){h[h.length-1].krw=v;LS.set("pd_hist_"+current.id,h);}
-  alert("국내 시세 저장됨 ✓");
-}
+function saveLocal(){if(!current)return;const v=+document.getElementById("cLocal").value||0;setLocalPrice(current.id,v);
+  document.getElementById("dLc").textContent=v?won(v):"미입력";const h=getHist(current.id);
+  if(h.length){h[h.length-1].krw=v;LS.set("pd_hist_"+current.id,h);}alert("국내 시세 저장됨 ✓");}
 
-// ---- 수동 추가 (박스/미개봉 등 API에 없는 상품) ----
-function addManual(){
-  const name=prompt("상품 이름 (예: 151 부스터박스 한국판)"); if(!name)return;
+function addManual(){const name=prompt("상품 이름 (예: 151 부스터박스 한국판)");if(!name)return;
   const usd=parseFloat(prompt("해외 시세 USD (모르면 0)")||"0");
-  const id="manual_"+Date.now();
-  const c={id,name,set:"수동 등록 · 미개봉/박스",img:"",usd:usd||null,trend:null,manual:true};
-  const w=getWatch();w.push(c);setWatch(w);
-  renderList(getWatch());
-}
+  const c={id:"manual_"+Date.now(),name,set:"수동 등록 · 미개봉/박스",img:"",usd:usd||null,trend:null,manual:true};
+  const w=getWatch();w.push(c);setWatch(w);renderList(getWatch());}
 
-// ---- init ----
+function openSettings(){document.getElementById("apiKey").value=apiKey;document.getElementById("settings").classList.add("open");}
+function closeSettings(){document.getElementById("settings").classList.remove("open");}
+function saveSettings(){apiKey=document.getElementById("apiKey").value.trim();LS.set("pd_key",apiKey);closeSettings();LS.set("pd_top",null);topCache=[];loadTop();}
+
 (async function(){
+  apiKey=LS.get("pd_key","")||"";
+  renderTree();
   await loadFX();
-  setLive(false); // 검색 전엔 중립; 검색 성공 시 live
-  document.getElementById("status").textContent="₩"+FX+" 기준";
-  switchTab("search");
-  document.getElementById("list").innerHTML='<p class="hint">위에서 카드를 검색해봐 (영문 이름).<br>예: <b>charizard</b>, <b>pikachu</b>, <b>mew</b>, <b>umbreon</b><br><br>마음에 드는 카드는 ☆ 눌러 관심목록에.<br>박스·미개봉처럼 검색에 없는 건 관심목록 탭의 ＋ 로 직접 추가.</p>';
+  setLive(false);document.getElementById("status").textContent="₩"+FX;
+  syncTabs();loadTop();
 })();
 </script>
 </body>
